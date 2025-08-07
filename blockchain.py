@@ -45,3 +45,17 @@ class Blockchain(object):
         content_hash = hashlib.sha256(content).hexdigest()
 
         return content_hash[:len(self.difficulty_target)] == self.difficulty_target
+
+    def append_block(self, nonce, hash_of_previous_block):
+        block = {
+            'index': len(self.chain),
+            'timestamp': time(),
+            'transaction': self.current_transactions,
+            'nonce': nonce,
+            'hash_of_previous_block': hash_of_previous_block
+        }
+
+        self.current_transactions = []
+
+        self.chain.append(block)
+        return block
