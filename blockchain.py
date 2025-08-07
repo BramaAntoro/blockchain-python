@@ -71,3 +71,20 @@ class Blockchain(object):
     @property
     def last_block(self):
         return self.chain(-1)
+    
+app = Flask(__name__)
+
+node_identifier = str(uuid4()).replace('-', '')
+
+blockchain = Blockchain()
+
+# routes
+@app.route('/blockchain', methods=['GET'])
+def full_chain():
+    response = {
+        'chain': blockchain.chain,
+        'length': len(blockchain.chain)
+    }
+
+    return jsonify(response), 200
+
