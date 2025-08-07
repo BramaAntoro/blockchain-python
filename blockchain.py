@@ -88,3 +88,22 @@ def full_chain():
 
     return jsonify(response), 200
 
+@app.route('/mine', methods=['GET'])
+def mine_block():
+    blockchain.add_transaction(sender='0', recipient=node_identifier, amount=1)
+    
+    last_block_hash = blockchain.hash_block(blockchain.last_block)
+
+    index = len(blockchain.chain)
+    nonce = blockchain.proof_of_work(index, last_block_hash, blockchain.current_transactions)
+
+    block = blockchain.append_block(nonce, last_block_hash)
+    response = {
+        'message': 'Block baru telah berhasil ditambahkan (mined)',
+        'index': block[index],
+        'hash_of_previous_block': block['hash_of_previous_block'],
+        'nonce': block['nonce'],
+        'transaction': block['transaction']
+    }
+
+    return jsonify(response), 200
