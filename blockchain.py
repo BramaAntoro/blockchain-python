@@ -32,7 +32,7 @@ class Blockchain(object):
             nonce = self.proof_of_work(0, genesis_hash, [])
         )
 
-    def proof_of_work(self, index, hash_of_previous_block, transactions, nonce):
+    def proof_of_work(self, index, hash_of_previous_block, transactions):
         nonce = 0
 
         while self.valid_proof(index, hash_of_previous_block, transactions, nonce) is False:
@@ -61,16 +61,25 @@ class Blockchain(object):
         return block
     
     def add_transaction(self, sender, recipient, amount): 
-        self.current_transactions.append({
-            'amout': amount,
+        transaction_data = {
+            'sender': sender,
             'recipient': recipient,
-            'sender': sender
+            'amount': amount
+        }
+
+        transaction_str = json.dumps(transaction_data, sort_keys=True).encode()
+        transaction_hash = hashlib.sha256(transaction_str).hexdigest()
+
+        self.current_transactions.append({
+            'hash': transaction_hash
         })
+
         return self.last_block['index'] + 1
+
     
     @property
     def last_block(self):
-        return self.chain(-1)
+        return self.chain[-1]
     
 app = Flask(__name__)
 
@@ -100,7 +109,7 @@ def mine_block():
     block = blockchain.append_block(nonce, last_block_hash)
     response = {
         'message': 'Block baru telah berhasil ditambahkan (mined)',
-        'index': block[index],
+        'index': block['index'],
         'hash_of_previous_block': block['hash_of_previous_block'],
         'nonce': block['nonce'],
         'transaction': block['transaction']
