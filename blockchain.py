@@ -107,3 +107,22 @@ def mine_block():
     }
 
     return jsonify(response), 200
+
+@app.route('/transaction/new', methods=['POST'])
+def new_transactions():
+    values = request.get_json()
+
+    required_fields = ['sender', 'recipient', 'amount']
+    if not all(k in values for k in required_fields):
+        return ('Missing fields', 400)
+    
+    index = blockchain.add_transaction(values['sender'], values['recipient'], values['amount'])
+
+    response = {
+        'message': f'Transaksi akan ditambahkan ke block {index}'
+    }
+
+    return jsonify(response), 201
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=int(sys.argv[1]))
