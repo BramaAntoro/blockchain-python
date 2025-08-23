@@ -181,7 +181,7 @@ def new_transactions():
 
     return jsonify(response), 201
 
-@app.route('nodes/add_nodes', methods=['POST'])
+@app.route('/nodes/add_nodes', methods=['POST'])
 def add_nodes():
     values = request.get_json()
     nodes = values.get('nodes')
@@ -200,7 +200,7 @@ def add_nodes():
     return jsonify(response), 200
 
 
-@app.route('nodes/sync', methods=['GET'])
+@app.route('/nodes/sync', methods=['GET'])
 def sync():
     updated = blockchain.update_blockchain()
     if updated:
@@ -214,7 +214,7 @@ def sync():
             'blockchain': list(blockchain.chain)        
         }
         
-    return jsonify(response), 200
+    return jsonify(response), 200  
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(sys.argv[1]))
