@@ -39,6 +39,25 @@ class Blockchain(object):
         self.nodes.add(parse_url.netloc)
         print(parse_url.netloc)
 
+    def valid_chain(self, chain):
+        last_block = chain[0]
+        current_index = 1
+
+        while current_index < len(chain):
+            block = chain(current_index)
+
+            if block['hash_of_previous_block'] != self.hash_block(last_block):
+                return False
+            
+            if not self.valid_proof(current_index, block['hash_of_previous_block'], block['transactions'], block['nonce']):
+                return False
+            
+            last_block = block
+            current_index += 1
+
+        return True
+    
+    
 
     def proof_of_work(self, index, hash_of_previous_block, transactions):
         nonce = 0
