@@ -196,6 +196,25 @@ def add_nodes():
         'message': 'Node baru telah di tambahkan',
         'nodes': list(blockchain.nodes)
     }
+    
+    return jsonify(response), 200
+
+
+@app.route('nodes/sync', methods=['GET'])
+def sync():
+    updated = blockchain.update_blockchain()
+    if updated:
+        response = {
+            'message': 'Blockchain telah di update dengan data terbaru',
+            'blockchain': list(blockchain.chain)        
+        }
+    else:
+        response = {
+            'message': 'Blockchain sudah menggunakan data terbaru',
+            'blockchain': list(blockchain.chain)        
+        }
+        
+    return jsonify(response), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(sys.argv[1]))
